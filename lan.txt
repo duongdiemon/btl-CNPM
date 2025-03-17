@@ -1,0 +1,37 @@
+#code cua usecase so do tong quan du an
+@startuml
+actor "Người dùng" as user
+
+rectangle HệThống {
+  usecase "Đăng ký" as UC1
+  usecase "Đăng nhập" as UC2
+  usecase "Cập nhật thông tin" as UC3
+
+  usecase "Thêm lịch trình" as UC4
+  usecase "Sửa lịch trình" as UC5
+  usecase "Xóa lịch trình" as UC6
+  usecase "Xem lịch trình" as UC7
+
+  usecase "Thêm giao dịch (thu/chi)" as UC8
+  usecase "Sửa giao dịch" as UC9
+  usecase "Xóa giao dịch" as UC10
+  usecase "Xem báo cáo thu chi" as UC11
+ usecase "Đăng xuấtxuất" as UC12
+ 
+}
+
+user --> UC1
+user --> UC2
+user --> UC3
+
+user --> UC4
+user --> UC5
+user --> UC6
+user --> UC7
+
+user --> UC8
+user --> UC9
+user --> UC10
+user --> UC11
+user --> UC12
+@enduml
