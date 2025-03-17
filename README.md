@@ -2,4 +2,5 @@
 nhom 6
 
 
-edit on my computer
+lam btap cho t
+
