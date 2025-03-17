@@ -1,0 +1,208 @@
+#Dang ki
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+participant "Cơ sở dữ liệu" as DB
+
+user -> App: Chọn "Đăng ký"
+App -> user: Hiển thị form đăng ký
+
+user -> App: Nhập thông tin (họ tên, email, mật khẩu)
+App -> App: Kiểm tra dữ liệu hợp lệ
+
+alt Dữ liệu hợp lệ
+    App -> DB: Kiểm tra email đã tồn tại
+    DB -> App: Trả về kết quả (tồn tại / không tồn tại)
+    
+    alt Email chưa tồn tại
+        App -> DB: Lưu thông tin tài khoản mới vào CSDL
+        DB -> App: Xác nhận đăng ký thành công
+        App -> user: Hiển thị thông báo đăng ký thành công
+    else Email đã tồn tại
+        App -> user: Hiển thị lỗi "Email đã được sử dụng"
+    end
+else Dữ liệu không hợp lệ
+    App -> user: Hiển thị lỗi (VD: "Mật khẩu quá ngắn")
+end
+@enduml
+
+#dang nhap
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+participant "Cơ sở dữ liệu" as DB
+
+user -> App: Nhập email & mật khẩu
+App -> DB: Kiểm tra thông tin đăng nhập
+DB -> App: Trả về kết quả (Hợp lệ/Không hợp lệ)
+alt Đăng nhập thành công
+  App -> user: Chuyển đến trang chính
+else Đăng nhập thất bại
+  App -> user: Hiển thị lỗi "Sai email hoặc mật khẩu"
+end
+@enduml
+
+#Cap nhat thong tin
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+participant "Cơ sở dữ liệu" as DB
+
+user -> App: Chọn "Cập nhật thông tin"
+App -> DB: Lấy dữ liệu thông tin hiện tại
+DB -> App: Trả về thông tin người dùng
+App -> user: Hiển thị form chỉnh sửa thông tin
+
+user -> App: Nhập thông tin mới (họ tên, email, mật khẩu, ...)
+
+App -> App: Kiểm tra dữ liệu hợp lệ
+alt Dữ liệu hợp lệ
+    App -> DB: Cập nhật thông tin trong CSDL
+    DB -> App: Xác nhận cập nhật thành công
+    App -> user: Hiển thị thông báo thành công
+else Dữ liệu không hợp lệ
+    App -> user: Hiển thị lỗi (VD: "Email không hợp lệ")
+end
+@enduml
+
+
+#dang xuat
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+
+user -> App: Chọn "Đăng xuất"
+App -> App: Xóa phiên đăng nhập
+App -> user: Chuyển về trang đăng nhập
+@enduml
+
+#Xem lich trinh
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+participant "Cơ sở dữ liệu" as DB
+
+user -> App: Chọn "Xem lịch trình"
+App -> DB: Truy vấn danh sách lịch trình của người dùng
+DB -> App: Trả về danh sách lịch trình
+App -> user: Hiển thị danh sách lịch trình
+
+user -> App: Chọn một lịch trình để xem chi tiết
+App -> DB: Lấy thông tin chi tiết lịch trình
+DB -> App: Trả về thông tin chi tiết
+App -> user: Hiển thị chi tiết lịch trình
+@enduml
+
+#Them lich trinh
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+participant "Cơ sở dữ liệu" as DB
+
+user -> App: Chọn "Thêm lịch trình"
+App -> user: Yêu cầu nhập thông tin lịch trình
+user -> App: Nhập thông tin (tiêu đề, ngày, giờ, mức ưu tiên)
+App -> App: Kiểm tra dữ liệu hợp lệ
+App -> DB: Lưu lịch trình vào CSDL
+DB -> App: Xác nhận lưu thành công
+App -> user: Hiển thị thông báo thành công
+@enduml
+
+#Sua lich trinh
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+participant "Cơ sở dữ liệu" as DB
+
+user -> App: Chọn "Sửa lịch trình"
+App -> DB: Lấy dữ liệu lịch trình hiện tại
+DB -> App: Trả về thông tin lịch trình
+App -> user: Hiển thị lịch trình để chỉnh sửa
+user -> App: Nhập thông tin cập nhật
+App -> App: Kiểm tra dữ liệu hợp lệ
+App -> DB: Cập nhật thông tin trong CSDL
+DB -> App: Xác nhận cập nhật thành công
+App -> user: Hiển thị thông báo thành công
+@enduml
+
+
+#Xoa lich trinh
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+participant "Cơ sở dữ liệu" as DB
+
+user -> App: Chọn "Xóa lịch trình"
+App -> user: Hiển thị danh sách lịch trình
+user -> App: Chọn lịch trình cần xóa
+App -> App: Yêu cầu xác nhận xóa
+user -> App: Xác nhận xóa lịch trình
+App -> DB: Xóa lịch trình khỏi CSDL
+DB -> App: Xác nhận xóa thành công
+App -> user: Hiển thị thông báo xóa thành công
+@enduml
+
+
+#Them giao dich thu chi
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+participant "Cơ sở dữ liệu" as DB
+
+user -> App: Chọn "Thêm giao dịch"
+App -> user: Yêu cầu nhập thông tin giao dịch (loại, danh mục, số tiền, ngày)
+user -> App: Nhập thông tin giao dịch
+App -> App: Kiểm tra dữ liệu hợp lệ
+App -> DB: Lưu giao dịch vào CSDL
+DB -> App: Xác nhận lưu thành công
+App -> user: Hiển thị thông báo thành công
+@enduml
+
+#Bao cao thu chi
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+participant "Cơ sở dữ liệu" as DB
+
+user -> App: Chọn "Xem báo cáo thu chi"
+App -> DB: Truy vấn tổng hợp dữ liệu thu/chi
+DB -> App: Trả về dữ liệu tổng hợp
+App -> App: Xử lý dữ liệu, tạo báo cáo
+App -> user: Hiển thị báo cáo thu chi
+@enduml
+
+
+
+#Sua giao dich
+@startuml
+actor "Người dùng" as user
+participant "Ứng dụng" as App
+participant "Cơ sở dữ liệu" as DB
+
+user -> App: Chọn "Sửa giao dịch"
+App -> DB: Truy vấn danh sách giao dịch của người dùng
+DB -> App: Trả về danh sách giao dịch
+App -> user: Hiển thị danh sách giao dịch
+
+user -> App: Chọn một giao dịch để chỉnh sửa
+App -> DB: Lấy thông tin chi tiết giao dịch
+DB -> App: Trả về thông tin giao dịch
+App -> user: Hiển thị form chỉnh sửa
+
+user -> App: Nhập thông tin mới (số tiền, danh mục, ghi chú, ...)
+App -> App: Kiểm tra dữ liệu hợp lệ
+
+alt Dữ liệu hợp lệ
+    App -> DB: Cập nhật thông tin giao dịch trong CSDL
+    DB -> App: Xác nhận cập nhật thành công
+    App -> user: Hiển thị thông báo cập nhật thành công
+else Dữ liệu không hợp lệ
+    App -> user: Hiển thị lỗi (VD: "Số tiền không hợp lệ")
+end
+@enduml
+
+
+
+
+
+
