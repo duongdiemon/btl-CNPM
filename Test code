@@ -1,0 +1,211 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <iomanip>
+#include <limits>
+#include <ctime>
+using namespace std;
+
+// Lớp Task (Quản lý công việc)
+class Task {
+public:
+    string name;
+    bool completed;
+    string dueDate;
+    Task(string n, string d, bool c = false) : name(n), dueDate(d), completed(c) {}
+};
+
+// Lớp Finance (Quản lý tài chính)
+class Finance {
+private:
+    double income, expense;
+public:
+    Finance() : income(0), expense(0) {}
+    void addIncome(double amount) { income += amount; }
+    void addExpense(double amount) { expense += amount; }
+    double getBalance() const { return income - expense; }
+    void displayFinance() const {
+        cout << "\n===== BÁO CÁO TÀI CHÍNH =====\n";
+        cout << "Thu nhập: " << fixed << setprecision(2) << income << "\n";
+        cout << "Chi tiêu: " << fixed << setprecision(2) << expense << "\n";
+        cout << "Số dư: " << fixed << setprecision(2) << getBalance() << "\n";
+        cout << "===========================\n";
+    }
+};
+
+// Lớp Note (Ghi chú cá nhân)
+class Note {
+public:
+    string content;
+    Note(string c) : content(c) {}
+};
+
+vector<Task> tasks;
+Finance finance;
+vector<Note> notes;
+
+void saveTasks() {
+    ofstream file("tasks.txt");
+    for (const auto &task : tasks) {
+        file << task.name << "," << task.dueDate << "," << task.completed << endl;
+    }
+    file.close();
+}
+
+void loadTasks() {
+    ifstream file("tasks.txt");
+    string name, dueDate;
+    bool completed;
+    while (file >> ws, getline(file, name, ',')) {
+        getline(file, dueDate, ',');
+        file >> completed;
+        tasks.emplace_back(name, dueDate, completed);
+    }
+    file.close();
+}
+
+void addTask() {
+    string name, dueDate;
+    cout << "Nhập tên công việc: ";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    getline(cin, name);
+    cout << "Nhập ngày hoàn thành (dd/mm/yyyy): ";
+    getline(cin, dueDate);
+    tasks.emplace_back(name, dueDate);
+    saveTasks();
+    cout << "Công việc đã được thêm!\n";
+}
+
+void showTasks() {
+    cout << "\n===== DANH SÁCH CÔNG VIỆC =====\n";
+    if (tasks.empty()) {
+        cout << "Không có công việc nào.\n";
+    } else {
+        for (size_t i = 0; i < tasks.size(); i++) {
+            cout << i + 1 << ". " << tasks[i].name << " - Hạn: " << tasks[i].dueDate << (tasks[i].completed ? " [Hoàn thành]\n" : " [Chưa hoàn thành]\n");
+        }
+    }
+    cout << "===============================\n";
+}
+
+void addFinance() {
+    double amount;
+    cout << "Nhập số tiền (+ thu nhập, - chi tiêu): ";
+    while (!(cin >> amount)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Lỗi! Hãy nhập một số hợp lệ: ";
+    }
+    if (amount > 0) finance.addIncome(amount);
+    else finance.addExpense(-amount);
+    finance.displayFinance();
+}
+
+void addNote() {
+    string content;#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <iomanip>
+#include <limits>
+#include <ctime>
+using namespace std;
+
+// Lớp Task (Quản lý công việc)
+class Task {
+public:
+    string name;
+    bool completed;
+    string dueDate;
+    Task(string n, string d, bool c = false) : name(n), dueDate(d), completed(c) {}
+};
+
+// Lớp Finance (Quản lý tài chính)
+class Finance {
+private:
+    double income, expense;
+public:
+    Finance() : income(0), expense(0) {}
+    void addIncome(double amount) { income += amount; }
+    void addExpense(double amount) { expense += amount; }
+    double getBalance() const { return income - expense; }
+    void displayFinance() const {
+        cout << "\n===== BÁO CÁO TÀI CHÍNH =====\n";
+        cout << "Thu nhập: " << fixed << setprecision(2) << income << "\n";
+        cout << "Chi tiêu: " << fixed << setprecision(2) << expense << "\n";
+        cout << "Số dư: " << fixed << setprecision(2) << getBalance() << "\n";
+        cout << "===========================\n";
+    }
+};
+
+// Lớp Note (Ghi chú cá nhân)
+class Note {
+public:
+    string content;
+    Note(string c) : content(c) {}
+};
+
+vector<Task> tasks;
+Finance finance;
+vector<Note> notes;
+
+void saveTasks() {
+    ofstream file("tasks.txt");
+    for (const auto &task : tasks) {
+        file << task.name << "," << task.dueDate << "," << task.completed << endl;
+    }
+    file.close();
+}
+
+void loadTasks() {
+    ifstream file("tasks.txt");
+    string name, dueDate;
+    bool completed;
+    while (file >> ws, getline(file, name, ',')) {
+        getline(file, dueDate, ',');
+        file >> completed;
+        tasks.emplace_back(name, dueDate, completed);
+    }
+    file.close();
+}
+
+void addTask() {
+    string name, dueDate;
+    cout << "Nhập tên công việc: ";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    getline(cin, name);
+    cout << "Nhập ngày hoàn thành (dd/mm/yyyy): ";
+    getline(cin, dueDate);
+    tasks.emplace_back(name, dueDate);
+    saveTasks();
+    cout << "Công việc đã được thêm!\n";
+}
+
+void showTasks() {
+    cout << "\n===== DANH SÁCH CÔNG VIỆC =====\n";
+    if (tasks.empty()) {
+        cout << "Không có công việc nào.\n";
+    } else {
+        for (size_t i = 0; i < tasks.size(); i++) {
+            cout << i + 1 << ". " << tasks[i].name << " - Hạn: " << tasks[i].dueDate << (tasks[i].completed ? " [Hoàn thành]\n" : " [Chưa hoàn thành]\n");
+        }
+    }
+    cout << "===============================\n";
+}
+
+void addFinance() {
+    double amount;
+    cout << "Nhập số tiền (+ thu nhập, - chi tiêu): ";
+    while (!(cin >> amount)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Lỗi! Hãy nhập một số hợp lệ: ";
+    }
+    if (amount > 0) finance.addIncome(amount);
+    else finance.addExpense(-amount);
+    finance.displayFinance();
+}
+
+void addNote() {
+    string content;
