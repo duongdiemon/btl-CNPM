@@ -1,0 +1,143 @@
+# Streamlit lÃ  má»™t thÆ° viá»‡n Python Ä‘á»ƒ táº¡o á»©ng dá»¥ng web Ä‘Æ¡n giáº£n
+# Sá»­ dá»¥ng 'st' lÃ m alias Ä‘á»ƒ dá»… dÃ ng truy cáº­p cÃ¡c chá»©c nÄƒng cá»§a Streamlit
+import streamlit as st
+import pandas as pd
+from datetime import datetime
+import json
+import os
+
+# Thiáº¿t láº­p trang
+st.set_page_config(
+    page_title="Quáº£n LÃ½ CÃ´ng Viá»‡c CÃ¡ NhÃ¢n",
+    page_icon="âœ…",
+    layout="wide"
+)
+
+# HÃ m Ä‘á»ƒ lÆ°u dá»¯ liá»‡u cÃ´ng viá»‡c
+def save_tasks():
+    with open('tasks.json', 'w') as f:
+        json.dump(st.session_state.tasks, f)
+
+# HÃ m Ä‘á»ƒ táº£i dá»¯ liá»‡u cÃ´ng viá»‡c
+def load_tasks():
+    if os.path.exists('tasks.json'):
+        with open('tasks.json', 'r') as f:
+            return json.load(f)
+    return []
+
+# Khá»Ÿi táº¡o session state
+if 'tasks' not in st.session_state:
+    st.session_state.tasks = load_tasks()
+
+def main():
+    st.markdown("<h1 style='text-align: center; color: #1f77b4;'>âœ… Quáº£n LÃ½ CÃ´ng Viá»‡c CÃ¡ NhÃ¢n</h1>", unsafe_allow_html=True)
+
+    # Form thÃªm cÃ´ng viá»‡c má»›i
+    st.markdown('<div class="section-header">ðŸ“Œ ThÃªm CÃ´ng Viá»‡c Má»›i</div>', unsafe_allow_html=True)
+    with st.form("new_task_form"):
+        col1, col2 = st.columns(2)
+        with col1:
+            task_name = st.text_input("ðŸ“‹ TÃªn cÃ´ng viá»‡c:")
+            priority = st.selectbox("ðŸŽ¯ Äá»™ Æ°u tiÃªn:", ["Cao", "Trung bÃ¬nh", "Tháº¥p"])
+        with col2:
+            due_date = st.date_input("ðŸ“… Háº¡n hoÃ n thÃ nh:")
+            task_description = st.text_area("ðŸ“ MÃ´ táº£:")
+        submitted = st.form_submit_button("âž• ThÃªm cÃ´ng viá»‡c")
+        
+        if submitted and task_name:
+            new_task = {
+                "tÃªn": task_name,
+                "mÃ´ táº£": task_description,
+                "háº¡n": str(due_date),
+                "Æ°u tiÃªn": priority,
+                "tráº¡ng thÃ¡i": "ChÆ°a hoÃ n thÃ nh",
+                "ngÃ y táº¡o": datetime.now().strftime("%Y-%m-%d")
+            }
+            st.session_state.tasks.append(new_task)
+            save_tasks()
+            st.success("âœ… ÄÃ£ thÃªm cÃ´ng viá»‡c má»›i!")
+
+    # Hiá»ƒn thá»‹ danh sÃ¡ch cÃ´ng viá»‡c
+    st.markdown('<div class="section-header">ðŸ“‹ Danh SÃ¡ch CÃ´ng Viá»‡c</div>', unsafe_allow_html=True)
+    tasks = st.session_state.tasks
+    
+    if tasks:
+        col1, col2 = st.columns([2,1])
+        with col1:
+            status_filter = st.selectbox("ðŸ” Lá»c theo tráº¡ng thÃ¡i:", ["Táº¥t cáº£", "ChÆ°a hoÃ n thÃ nh", "ÄÃ£ hoÃ n thÃ nh"])
+        with col2:
+            priority_filter = st.selectbox("ðŸŽ¯ Lá»c theo Ä‘á»™ Æ°u tiÃªn:", ["Táº¥t cáº£", "Cao", "Trung bÃ¬nh", "Tháº¥p"])
+
+        df = pd.DataFrame(tasks)
+        if status_filter != "Táº¥t cáº£":
+            df = df[df["tráº¡ng thÃ¡i"] == status_filter]
+        if priority_filter != "Táº¥t cáº£":
+            df = df[df["Æ°u tiÃªn"] == priority_filter]
+
+        for idx, task in df.iterrows():
+            priority_class = {
+                "Cao": "priority-high",
+                "Trung bÃ¬nh": "priority-medium",
+                "Tháº¥p": "priority-low"
+            }[task['Æ°u tiÃªn']]
+            
+            status_class = "status-completed" if task['tráº¡ng thÃ¡i'] == "ÄÃ£ hoÃ n thÃ nh" else "status-pending"
+            
+            with st.expander(f"ðŸ”¸ {task['tÃªn']}"):
+                st.markdown(f"""
+                <div class="task-card">
+                    <p><span class="{priority_class}">{'ðŸ”´' if task['Æ°u tiÃªn'] == 'Cao' else 'ðŸŸ¡' if task['Æ°u tiÃªn'] == 'Trung bÃ¬nh' else 'ðŸŸ¢'} {task['Æ°u tiÃªn']}</span></p>
+                    <p>ðŸ“ <b>MÃ´ táº£:</b> {task['mÃ´ táº£']}</p>
+                    <p>ðŸ“… <b>Háº¡n:</b> {task['háº¡n']}</p>
+                    <p><span class="{status_class}">{task['tráº¡ng thÃ¡i']}</span></p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # ThÃªm pháº§n chá»‰nh sá»­a cÃ´ng viá»‡c
+                if st.button("âœï¸ Chá»‰nh sá»­a", key=f"edit_{idx}"):
+                    st.session_state[f'editing_{idx}'] = True
+
+                # Hiá»ƒn thá»‹ form chá»‰nh sá»­a khi nÃºt Ä‘Æ°á»£c nháº¥n
+                if st.session_state.get(f'editing_{idx}', False):
+                    with st.form(key=f"edit_form_{idx}"):
+                        st.subheader("ðŸ“ Chá»‰nh sá»­a cÃ´ng viá»‡c")
+                        new_name = st.text_input("TÃªn cÃ´ng viá»‡c:", value=task['tÃªn'])
+                        new_description = st.text_area("MÃ´ táº£:", value=task['mÃ´ táº£'])
+                        new_due_date = st.date_input("Háº¡n hoÃ n thÃ nh:", value=datetime.strptime(task['háº¡n'], "%Y-%m-%d").date())
+                        new_priority = st.selectbox("Äá»™ Æ°u tiÃªn:", ["Cao", "Trung bÃ¬nh", "Tháº¥p"], index=["Cao", "Trung bÃ¬nh", "Tháº¥p"].index(task['Æ°u tiÃªn']))
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            if st.form_submit_button("ðŸ’¾ LÆ°u thay Ä‘á»•i"):
+                                st.session_state.tasks[idx].update({
+                                    "tÃªn": new_name,
+                                    "mÃ´ táº£": new_description,
+                                    "háº¡n": str(new_due_date),
+                                    "Æ°u tiÃªn": new_priority
+                                })
+                                save_tasks()
+                                del st.session_state[f'editing_{idx}']
+                                st.success("âœ… ÄÃ£ cáº­p nháº­t cÃ´ng viá»‡c!")
+                                st.rerun()
+                        with col2:
+                            if st.form_submit_button("âŒ Há»§y"):
+                                del st.session_state[f'editing_{idx}']
+                                st.rerun()
+
+                # CÃ¡c nÃºt thao tÃ¡c khÃ¡c
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    if st.button("âœ”ï¸ " + ("ÄÃ¡nh dáº¥u hoÃ n thÃ nh" if task['tráº¡ng thÃ¡i'] == "ChÆ°a hoÃ n thÃ nh" else "ÄÃ¡nh dáº¥u chÆ°a hoÃ n thÃ nh"), key=f"btn_{idx}"):
+                        st.session_state.tasks[idx]['tráº¡ng thÃ¡i'] = "ÄÃ£ hoÃ n thÃ nh" if task['tráº¡ng thÃ¡i'] == "ChÆ°a hoÃ n thÃ nh" else "ChÆ°a hoÃ n thÃ nh"
+                        save_tasks()
+                        st.rerun()
+                with col2:
+                    if st.button("ðŸ—‘ï¸ XÃ³a cÃ´ng viá»‡c nÃ y", key=f"del_{idx}"):
+                        st.session_state.tasks.pop(idx)
+                        save_tasks()
+                        st.rerun()
+    else:
+        st.info("ðŸ“Œ ChÆ°a cÃ³ cÃ´ng viá»‡c nÃ o Ä‘Æ°á»£c thÃªm.")
+
+if __name__ == "__main__":
+    main()
