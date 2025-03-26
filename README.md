@@ -1,6 +1,6 @@
 # btl-CNPM
 nhom 6
-#
+# đăng nhập và đăng xuất
 import streamlit as st
 import hashlib
 import json
